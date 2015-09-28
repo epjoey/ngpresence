@@ -12,6 +12,7 @@ angular.module('app.mocks', [])
   }])
 
 
+  // presence mock. the real implementation should access the Pusher api.
   .factory('presence', ['auth', function(auth){
 
     var channels = {};
@@ -32,6 +33,8 @@ angular.module('app.mocks', [])
 
     return {
 
+      channels: channels,
+
       // Subscribe to the channel. Returns a channel object
       subscribe: function(channelName){
         var channel = channels[channelName];
@@ -47,6 +50,7 @@ angular.module('app.mocks', [])
         delete channels[channelName];
       },
 
+      // Bind events on the channel. Wrapped so we can make event names pusher-friendly.
       bindChannelEvent: function(channel, evt, callback) {
         return channel.bind(evt, callback);
       },

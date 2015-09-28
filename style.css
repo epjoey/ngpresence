@@ -23,3 +23,6 @@
     vertical-align: top;
     float: left;
 }
+.tooltip {
+    font-size: 11px;
+}

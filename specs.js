@@ -19,15 +19,24 @@ describe('ngpresence directive', function() {
     inject(function($compile, $rootScope, _presence_){
 
       presence = _presence_;
-      scope = $rootScope.$new();
+      spyOn(presence, "subscribe").and.callThrough(); // replace this with mock implementation when Pusher is implented
+      spyOn(presence, "unsubscribe").and.callThrough(); // replace this with mock implementation when Pusher is implented
 
+      scope = $rootScope.$new();
       scope.channelName = 'test-channel';
+
       var html = "<div ng-presence presence-channel-name='{{ channelName }}'></div>";
       elem = $compile(angular.element(html))(scope);
-      channel = presence.subscribe(scope.channelName);
+      channel = presence.channels[scope.channelName];
 
       scope.$digest();
     });
+  });
+
+
+  it('should have subscribed user', function () {
+    expect(presence.subscribe).toHaveBeenCalled();
+    expect(channel.members.length).toBe(1);
   });
 
 
@@ -37,7 +46,6 @@ describe('ngpresence directive', function() {
 
 
   it('should have 2 users', function () {
-
     channel.members.push(mockUser1);
     channel.members.push(mockUser2);
     channel.trigger('member_added');
@@ -47,14 +55,19 @@ describe('ngpresence directive', function() {
 
 
   it('should have 1 user', function () {
-
     channel.members.push(mockUser1);
     channel.members.push(mockUser2);
-    channel.trigger('member_added');
     channel.members.pop();
     channel.trigger('member_removed');
 
     expect(elem.find('.user').length).toBe(1);
   });
+
+  it('should have unsubscribed user', function () {
+
+    //...
+  });
+
+
 
 });

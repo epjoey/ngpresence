@@ -17,7 +17,7 @@ angular.module('app.directives', [])
         <span ng-repeat='user in users|limitTo:maxUsersToRender' tooltip='{{ user.fullName }}' tooltip-placement='bottom' class='user'> \
           <img ng-src='{{ user.imageUrl }}' width='25' height='25' /> \
         </span> \
-        <span class='user text-center text-muted small' ng-if='excessUsers.length' ng-bind=\"'+'+(excessUsers.length)\" tooltip-placement='bottom' tooltip='{{ excessUsersStr }}'></span> \
+        <span class='user text-center text-muted small' ng-if='excessUsers.length' ng-bind=\"'+'+(excessUsers.length)\" tooltip-placement='bottom' tooltip-html-unsafe='{{ excessUsersStr }}'></span> \
       </span> \
       ",
 
@@ -47,7 +47,7 @@ angular.module('app.directives', [])
 
           // hide excessUsers behind a single tooltip
           scope.excessUsers = _.rest(scope.users, scope.maxUsersToRender);
-          scope.excessUsersStr = s.toSentence(_.pluck(scope.excessUsers, 'fullName'));
+          scope.excessUsersStr = _.pluck(scope.excessUsers, 'fullName').join('<br>');
 
           // update DOM
           scope.$digest();
