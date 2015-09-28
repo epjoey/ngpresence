@@ -1,6 +1,7 @@
 .availability-container .navbar {
     margin-top: 20px;
     margin-bottom: 20px;
+    min-height: 42px;
 }
 .booking h5 {
     margin-bottom: 20px;

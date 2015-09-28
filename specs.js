@@ -1,6 +1,9 @@
 // a test suite (group of tests)
 describe('ngpresence directive', function() {
 
+  var templateImport = document.getElementById('ng-presence-html-import').import
+    , template = templateImport.querySelector('.presence').outerHTML;
+
   var scope, elem, presence, channel;
 
   var mockUser1 = {
@@ -16,25 +19,29 @@ describe('ngpresence directive', function() {
 
   beforeEach(function() {
     module('app');
-    inject(function($compile, $rootScope, _presence_){
+    inject(function($compile, $rootScope, _presence_, $templateCache){
 
       presence = _presence_;
       spyOn(presence, "subscribe").and.callThrough(); // replace this with mock implementation when Pusher is implented
       spyOn(presence, "unsubscribe").and.callThrough(); // replace this with mock implementation when Pusher is implented
+
+      $templateCache.put('ng-presence.html', template);
 
       scope = $rootScope.$new();
       scope.channelName = 'test-channel';
 
       var html = "<div ng-presence presence-channel-name='{{ channelName }}'></div>";
       elem = $compile(angular.element(html))(scope);
-      channel = presence.channels[scope.channelName];
 
       scope.$digest();
+
+      channel = presence.channels[scope.channelName];
     });
   });
 
 
   it('should have subscribed user', function () {
+    expect(channel).toBeDefined();
     expect(presence.subscribe).toHaveBeenCalled();
     expect(channel.members.length).toBe(1);
   });
@@ -64,7 +71,8 @@ describe('ngpresence directive', function() {
   });
 
   it('should have unsubscribed user', function () {
-
+    scope.$broadcast('$destroy');
+    expect(presence.subscribe).toHaveBeenCalled();
     //...
   });
 
