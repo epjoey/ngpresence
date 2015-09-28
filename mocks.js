@@ -24,8 +24,10 @@ angular.module('app.mocks', [])
           this.callbacks[evt] = this.callbacks[evt] || [];
           this.callbacks[evt].push(callback);
         },
-        trigger: function(evt) {
-          _.invoke(this.callbacks[evt], 'call');
+        trigger: function(evt, data) {
+          _.each(this.callbacks[evt], function(cb) {
+            cb(data)
+          });
         },
         members: []
       }
